@@ -170,3 +170,8 @@ variable "no_proxy" {
   type    = list(string)
   default = []
 }
+
+variable "additional_metadata" {
+  type    = map(string)
+  default = {}
+}

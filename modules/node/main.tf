@@ -39,10 +39,10 @@ resource "openstack_compute_instance_v2" "instance" {
       proxy_url        = var.proxy_url
       no_proxy         = var.no_proxy
   }))
-  metadata = {
+  metadata = merge({
     rke2_version = var.rke2_version
     rke2_role    = var.is_server ? "server" : "agent"
-  }
+  }, var.additional_metadata)
   tags = var.instance_tags
 
   availability_zone_hints = length(var.availability_zones) > 0 ? var.availability_zones[count.index % length(var.availability_zones)] : null

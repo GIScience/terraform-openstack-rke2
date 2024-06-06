@@ -101,6 +101,11 @@ variable "dns_domain" {
 # Node variables #
 ##################
 
+variable "additional_metadata" {
+  type    = map(string)
+  default = {}
+}
+
 variable "image_id" {
   type        = string
   default     = ""
