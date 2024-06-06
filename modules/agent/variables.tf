@@ -24,6 +24,11 @@ variable "node_config" {
 
 }
 
+variable "additional_metadata" {
+  type    = map(string)
+  default = {}
+}
+
 variable "nodes_count" {
   type = string
 }

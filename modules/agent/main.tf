@@ -2,6 +2,7 @@ module "agent" {
   source                 = "../node"
   cluster_name           = var.node_config.cluster_name
   name_prefix            = "${var.node_config.cluster_name}-${var.name_prefix}"
+  additional_metadata    = var.additional_metadata
   nodes_count            = var.nodes_count
   image_id               = var.image_id
   image_name             = var.image_name
