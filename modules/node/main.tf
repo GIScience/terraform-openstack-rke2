@@ -48,7 +48,7 @@ resource "openstack_compute_instance_v2" "instance" {
   availability_zone_hints = length(var.availability_zones) > 0 ? var.availability_zones[count.index % length(var.availability_zones)] : null
 
   network {
-    port = openstack_networking_port_v2.port[count.index].id
+    port = openstack_networking_port_v2.port[(var.floating_ip_count > 0 ? count.index * var.floating_ip_count : count.index)].id
   }
 
   scheduler_hints {
@@ -80,7 +80,7 @@ resource "openstack_compute_instance_v2" "instance" {
 }
 
 resource "openstack_networking_port_v2" "port" {
-  count              = var.nodes_count
+  count              = (var.floating_ip_count <= 0 ? var.nodes_count : var.floating_ip_count * var.nodes_count)
   network_id         = var.network_id
   security_group_ids = [var.secgroup_id]
   admin_state_up     = true
@@ -89,15 +89,21 @@ resource "openstack_networking_port_v2" "port" {
   }
 }
 
+resource "openstack_compute_interface_attach_v2" "attach_extra_ports" {
+  count = (var.floating_ip_count - 1) <= 0 ? 0 : (var.floating_ip_count - 1) * var.nodes_count
+  instance_id = openstack_compute_instance_v2.instance[floor(count.index / (var.floating_ip_count - 1))].id
+  port_id = openstack_networking_port_v2.port[count.index + floor(count.index / (var.floating_ip_count - 1)) + 1].id
+}
+
 resource "openstack_networking_floatingip_v2" "floating_ip" {
-  count = var.assign_floating_ip ? var.nodes_count : 0
+  count = var.nodes_count * var.floating_ip_count
   pool  = var.floating_ip_pool
 }
 
-resource "openstack_compute_floatingip_associate_v2" "associate_floating_ip" {
-  count       = var.assign_floating_ip ? var.nodes_count : 0
+resource "openstack_networking_floatingip_associate_v2" "associate_floating_ip" {
+  count = var.nodes_count * var.floating_ip_count
   floating_ip = openstack_networking_floatingip_v2.floating_ip[count.index].address
-  instance_id = openstack_compute_instance_v2.instance[count.index].id
+  port_id = openstack_networking_port_v2.port[count.index].id
 }
 
 resource "null_resource" "upgrade" {
@@ -108,8 +114,8 @@ resource "null_resource" "upgrade" {
   }
 
   connection {
-    bastion_host = var.assign_floating_ip ? "" : var.bastion_host
-    host         = var.assign_floating_ip ? openstack_networking_floatingip_v2.floating_ip[count.index].address : openstack_compute_instance_v2.instance[0].access_ip_v4
+    bastion_host = var.floating_ip_count == 0 ? var.bastion_host : ""
+    host         = var.floating_ip_count == 0 ? openstack_compute_instance_v2.instance[0].access_ip_v4 : openstack_networking_floatingip_v2.floating_ip[floor(count.index / var.floating_ip_count)].address
     user         = var.system_user
     private_key  = var.use_ssh_agent ? null : file(var.ssh_key_file)
     agent        = var.use_ssh_agent

@@ -15,7 +15,7 @@ module "edge_node" {
   nodes_count        = 1
   name_prefix        = "edge"
   flavor_name        = "genX1"
-  assign_floating_ip = true
+  floating_ip_count = 1
   node_config        = module.controlplane.node_config
   rke2_config        = file("edge.yaml")
 }

@@ -85,6 +85,11 @@ variable "public_net_name" {
   description = "External network name"
 }
 
+variable "floating_ip_count" {
+  type    = number
+  default = 1
+}
+
 variable "dns_servers" {
   type        = list(string)
   default     = null

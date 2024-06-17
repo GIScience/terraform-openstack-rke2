@@ -74,9 +74,9 @@ variable "secgroup_id" {
   type = string
 }
 
-variable "assign_floating_ip" {
-  type    = bool
-  default = false
+variable "floating_ip_count" {
+  type    = number
+  default = 0
 }
 
 variable "floating_ip_pool" {

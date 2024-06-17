@@ -57,9 +57,9 @@ variable "server_group_affinity" {
   description = "Server group affinity"
 }
 
-variable "assign_floating_ip" {
-  type    = bool
-  default = "false"
+variable "floating_ip_count" {
+  type    = number
+  default = 0
 }
 
 variable "rke2_version" {

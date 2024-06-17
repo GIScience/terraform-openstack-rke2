@@ -7,7 +7,7 @@ module "agent" {
   image_id               = var.image_id
   image_name             = var.image_name
   flavor_name            = var.flavor_name
-  assign_floating_ip     = var.assign_floating_ip
+  floating_ip_count      = var.floating_ip_count
   keypair_name           = var.node_config.keypair_name
   ssh_key_file           = var.node_config.ssh_key_file
   system_user            = var.node_config.system_user
