@@ -3,6 +3,11 @@ output "floating_ip" {
   description = "Nodes floating IP"
 }
 
+output "floating_ip_associate" {
+  value       = module.server.floating_ip_associate
+  description = "Nodes floating IP association"
+}
+
 output "internal_ip" {
   value       = module.server.internal_ip
   description = "Nodes internal IP"
