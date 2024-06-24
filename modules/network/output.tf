@@ -8,3 +8,6 @@ output "router_ip" {
   value = openstack_networking_router_v2.router.external_fixed_ip[0].ip_address
 }
 
+output "nodes_subnet_cidr" {
+  value = openstack_networking_subnet_v2.nodes_subnet.cidr
+}

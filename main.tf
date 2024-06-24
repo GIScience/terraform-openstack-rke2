@@ -29,35 +29,36 @@ locals {
   scp              = "scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${local.ssh_key_arg}"
   remote_rke2_yaml = "${var.system_user}@${module.server.floating_ip[0]}:/etc/rancher/rke2/rke2-remote.yaml"
 
-  nodes_net_id    = var.use_existing_network ? var.existing_network_id : module.network.nodes_net_id
-  nodes_subnet_id = var.use_existing_network ? var.existing_subnet_id : module.network.nodes_subnet_id
-  router_ip       = var.use_existing_network ? var.existing_router_ip : module.network.router_ip
+  nodes_net_id      = var.use_existing_network ? var.existing_network_id : module.network.nodes_net_id
+  nodes_subnet_id   = var.use_existing_network ? var.existing_subnet_id : module.network.nodes_subnet_id
+  nodes_subent_cidr = var.use_existing_network ? var.existing_subnet_cidr : module.network.nodes_subnet_cidr
+  router_ip         = var.use_existing_network ? var.existing_router_ip : module.network.router_ip
 
   secgroup_rules = concat(var.secgroup_rules, [
     {
       "port" : 9345
       "protocol" : "tcp"
-      "source" : "${local.router_ip}/32"
+      "source" : "${local.nodes_subent_cidr}"
     },
     {
       "port" : 6443
       "protocol" : "tcp"
-      "source" : "${local.router_ip}/32"
+      "source" : "${local.nodes_subent_cidr}"
     },
     {
       "port" : 10250
       "protocol" : "tcp"
-      "source" : "${local.router_ip}/32"
+      "source" : "${local.nodes_subent_cidr}"
     },
     {
       "port" : 8472
       "protocol" : "udp"
-      "source" : "${local.router_ip}/32"
+      "source" : "${local.nodes_subent_cidr}"
     },
     {
       "port" : 9099
       "protocol" : "tcp"
-      "source" : "${local.router_ip}/32"
+      "source" : "${local.nodes_subent_cidr}"
     }
   ])
 }
