@@ -71,7 +71,7 @@ module "controlplane" {
   }
 }
 module "worker" {
-  source                 = "remche/rke2/openstack"
+  source                 = "remche/rke2/openstack//modules/agent"
   boot_from_volume       = true
   boot_volume_size       = var.worker_volume_size
   boot_volume_type       = var.worker_volume_type

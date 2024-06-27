@@ -40,6 +40,8 @@ resource "openstack_compute_instance_v2" "instance" {
       additional_configs_gzb64 = var.additional_configs_gzb64
       proxy_url                = var.proxy_url
       no_proxy                 = var.no_proxy
+      kube_vip                 = var.kube_vip
+      internal_vip             = var.kube_vip ? var.internal_vip : ""
   }))
   metadata = merge({
     rke2_version = var.rke2_version
@@ -88,6 +90,13 @@ resource "openstack_networking_port_v2" "port" {
   admin_state_up     = true
   fixed_ip {
     subnet_id = var.subnet_id
+  }
+
+  dynamic "allowed_address_pairs" {
+    for_each = var.kube_vip ? [var.internal_vip] : []
+    content {
+      ip_address = allowed_address_pairs.value
+    }
   }
 }
 

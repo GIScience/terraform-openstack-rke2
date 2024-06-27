@@ -108,6 +108,12 @@ variable "existing_subnet_cidr" {
   default     = null
 }
 
+variable "kube_vip_loadbalancer" {
+  type        = bool
+  description = "should an extra floating ip be created for use with kube-vip"
+  default     = false
+}
+
 variable "nodes_net_cidr" {
   type        = string
   default     = "192.168.42.0/24"

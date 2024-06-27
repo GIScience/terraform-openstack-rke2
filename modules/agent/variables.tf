@@ -96,3 +96,8 @@ variable "boot_volume_type" {
   type    = string
   default = ""
 }
+
+variable "kube_vip" {
+  type    = bool
+  default = false
+}
