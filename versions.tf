@@ -13,5 +13,8 @@ terraform {
       source  = "hashicorp/null"
       version = ">=2.1.2"
     }
+    openstack = {
+      source = "terraform-provider-openstack/openstack"
+    }
   }
 }

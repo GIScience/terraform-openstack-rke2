@@ -186,3 +186,12 @@ variable "additional_metadata" {
   type    = map(string)
   default = {}
 }
+
+variable "kube_vip" {
+  type = bool
+}
+
+variable "internal_vip" {
+  type    = string
+  default = ""
+}

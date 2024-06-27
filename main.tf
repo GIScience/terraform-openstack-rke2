@@ -59,6 +59,11 @@ locals {
       "port" : 9099
       "protocol" : "tcp"
       "source" : "${local.nodes_subent_cidr}"
+    },
+    {
+      "port" : 51820
+      "protocol" : "udp"
+      "source" : "${local.nodes_subent_cidr}"
     }
   ])
 }
@@ -126,6 +131,8 @@ module "server" {
   additional_configs_gzb64 = var.additional_configs_gzb64
   do_upgrade               = var.do_upgrade
   proxy_url                = var.proxy_url
+  kube_vip                 = var.kube_vip_loadbalancer
+  internal_vip             = var.kube_vip_loadbalancer ? openstack_networking_port_v2.kube_vip[0].all_fixed_ips[0] : ""
   no_proxy                 = concat(["localhost", "127.0.0.1", "169.254.169.254", "127.0.0.0/8", "169.254.0.0/16", "10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"], var.no_proxy)
 }
 
@@ -136,4 +143,28 @@ resource "local_file" "tmpdirfile" {
 
 resource "random_string" "rke2_token" {
   length = 64
+}
+
+resource "openstack_networking_port_v2" "kube_vip" {
+  count              = var.kube_vip_loadbalancer ? 1 : 0
+  name               = "${var.cluster_name}-vip"
+  network_id         = local.nodes_net_id
+  security_group_ids = [module.secgroup.secgroup_id]
+  admin_state_up     = false
+
+  fixed_ip {
+    subnet_id = local.nodes_subnet_id
+  }
+}
+
+resource "openstack_networking_floatingip_v2" "kube_vip" {
+  count       = var.kube_vip_loadbalancer ? 1 : 0
+  pool        = var.public_net_name
+  description = "Floating IP for ${var.cluster_name}-kube-vip (in-use)"
+}
+
+resource "openstack_networking_floatingip_associate_v2" "kube_vip" {
+  count       = var.kube_vip_loadbalancer ? 1 : 0
+  floating_ip = openstack_networking_floatingip_v2.kube_vip[0].address
+  port_id     = openstack_networking_port_v2.kube_vip[0].id
 }
