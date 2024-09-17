@@ -51,6 +51,16 @@ locals {
       "source" : "${local.nodes_subent_cidr}"
     },
     {
+      "port" : 8472
+      "protocol" : "udp"
+      "source" : "${local.nodes_subent_cidr}"
+    },
+    {
+      "port" : 9099
+      "protocol" : "tcp"
+      "source" : "${local.nodes_subent_cidr}"
+    },
+    {
       "port" : 51820
       "protocol" : "udp"
       "source" : "${local.nodes_subent_cidr}"
