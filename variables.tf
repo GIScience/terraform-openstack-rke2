@@ -101,13 +101,6 @@ variable "existing_subnet_id" {
   default     = null
 }
 
-variable "existing_subnet_cidr" {
-  type        = string
-  description = "cidr of the existing subnet to use if use_existing_network is true"
-  nullable    = true
-  default     = null
-}
-
 variable "nodes_net_cidr" {
   type        = string
   default     = "192.168.42.0/24"

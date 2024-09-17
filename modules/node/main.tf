@@ -139,6 +139,6 @@ resource "openstack_networking_secgroup_rule_v2" "rules" {
   count             = var.assign_floating_ip ? var.nodes_count : 0
   direction         = "ingress"
   ethertype         = "IPv4"
-  remote_ip_prefix  = "${openstack_networking_floatingip_v2.floating_ip[count.index].address}/32"
+  remote_ip_prefix  = openstack_networking_floatingip_v2.floating_ip[count.index].address
   security_group_id = var.secgroup_id
 }
