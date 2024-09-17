@@ -14,7 +14,7 @@ output "internal_ip" {
 }
 
 output "router_ip" {
-  value       = local.router_ip
+  value       = module.network.router_ip
   description = "Router external_ip"
 }
 
@@ -25,7 +25,7 @@ output "node_config" {
 }
 
 output "subnet_id" {
-  value       = local.nodes_subnet_id
+  value       = module.network.nodes_subnet_id
   description = "Nodes Subnet ID"
 }
 

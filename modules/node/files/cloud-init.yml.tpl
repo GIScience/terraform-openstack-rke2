@@ -72,8 +72,6 @@ write_files:
     tls-san:
       ${indent(6, yamlencode(concat(san, additional_san)))}
     kube-apiserver-arg: "kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname"
-    advertise-address: "${public_address}"
-    node-external-ip: "${public_address}"
     %{~ endif ~}
     ${indent(4,rke2_conf)}
 %{ if is_server ~}

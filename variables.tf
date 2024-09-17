@@ -74,33 +74,6 @@ variable "secgroup_rules" {
 # Network variables #
 #####################
 
-variable "use_existing_network" {
-  type        = bool
-  description = "should an existing router, network and subnet be used"
-  default     = false
-}
-
-variable "existing_router_ip" {
-  type        = string
-  description = "public ip of the existing router that is used if use_existing_network is true"
-  nullable    = true
-  default     = null
-}
-
-variable "existing_network_id" {
-  type        = string
-  description = "id of the existing network to use if use_existing_network is true"
-  nullable    = true
-  default     = null
-}
-
-variable "existing_subnet_id" {
-  type        = string
-  description = "id of the existing subnet to use if use_existing_network is true"
-  nullable    = true
-  default     = null
-}
-
 variable "nodes_net_cidr" {
   type        = string
   default     = "192.168.42.0/24"
