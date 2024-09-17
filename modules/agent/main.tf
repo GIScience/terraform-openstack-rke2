@@ -34,5 +34,4 @@ module "agent" {
   do_upgrade             = var.do_upgrade
   proxy_url              = var.node_config.proxy_url
   no_proxy               = var.node_config.no_proxy
-  kube_vip               = var.kube_vip
 }
