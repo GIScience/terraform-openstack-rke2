@@ -1,3 +1,13 @@
+To publish this module to gitlab run the following in the repo root. Replace the version with the upstream version of the module and use a personal access token for auth.
+```
+export TERRAFORM_MODULE_VERSION="0.6.9"
+tar -vczf /tmp/terraform-openstack-rke2-${TERRAFORM_MODULE_VERSION}.tgz -C . --exclude=./.git .
+curl --fail-with-body --location --header "PRIVATE-TOKEN: <your_gitlab_PAT_here>" --upload-file /tmp/terraform-openstack-rke2-${TERRAFORM_MODULE_VERSION}.tgz \
+  https://gitlab.heigit.org/api/v4/projects/851/packages/terraform/modules/rke2/openstack/${TERRAFORM_MODULE_VERSION}/file
+```
+
+Original README:
+
 # terraform-openstack-rke2
 [![Terraform Registry](https://img.shields.io/badge/terraform-registry-blue.svg)](https://registry.terraform.io/modules/remche/rke2/openstack)
 [![test-fast](https://github.com/remche/terraform-openstack-rke2/actions/workflows/test-fast.yaml/badge.svg)](https://github.com/remche/terraform-openstack-rke2/actions/workflows/test-fast.yaml)
