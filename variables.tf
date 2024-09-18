@@ -97,6 +97,26 @@ variable "dns_domain" {
   description = "DNS domain for DNS integration. DNS domain names must have a dot at the end"
 }
 
+variable "use_existing_network" {
+  type        = bool
+  description = "should an existing router, network and subnet be used"
+  default     = false
+}
+
+variable "existing_network_id" {
+  type        = string
+  description = "id of the existing network to use if use_existing_network is true"
+  nullable    = true
+  default     = null
+}
+
+variable "existing_subnet_id" {
+  type        = string
+  description = "id of the existing subnet to use if use_existing_network is true"
+  nullable    = true
+  default     = null
+}
+
 ##################
 # Node variables #
 ##################

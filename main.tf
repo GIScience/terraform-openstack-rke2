@@ -5,8 +5,8 @@ locals {
     ssh_key_file       = var.ssh_key_file
     system_user        = var.system_user
     use_ssh_agent      = var.use_ssh_agent
-    network_id         = module.network.nodes_net_id
-    subnet_id          = module.network.nodes_subnet_id
+    network_id         = local.nodes_net_id
+    subnet_id          = local.nodes_subnet_id
     secgroup_id        = module.secgroup.secgroup_id
     server_affinity    = var.server_group_affinity
     config_drive       = var.nodes_config_drive
@@ -28,6 +28,9 @@ locals {
   ssh              = "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${local.ssh_key_arg}"
   scp              = "scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${local.ssh_key_arg}"
   remote_rke2_yaml = "${var.system_user}@${module.server.floating_ip[0]}:/etc/rancher/rke2/rke2-remote.yaml"
+
+  nodes_net_id    = var.use_existing_network ? var.existing_network_id : module.network.nodes_net_id
+  nodes_subnet_id = var.use_existing_network ? var.existing_subnet_id : module.network.nodes_subnet_id
 }
 
 module "keypair" {
@@ -39,6 +42,7 @@ module "keypair" {
 
 module "network" {
   source          = "./modules/network"
+  count           = var.use_existing_network ? 0 : 1
   network_name    = "${var.cluster_name}-nodes-net"
   subnet_name     = "${var.cluster_name}-nodes-subnet"
   router_name     = "${var.cluster_name}-router"
@@ -68,8 +72,8 @@ module "server" {
   ssh_key_file             = var.ssh_key_file
   system_user              = var.system_user
   use_ssh_agent            = var.use_ssh_agent
-  network_id               = module.network.nodes_net_id
-  subnet_id                = module.network.nodes_subnet_id
+  network_id               = local.nodes_net_id
+  subnet_id                = local.nodes_subnet_id
   secgroup_id              = module.secgroup.secgroup_id
   server_affinity          = var.server_group_affinity
   assign_floating_ip       = "true"
