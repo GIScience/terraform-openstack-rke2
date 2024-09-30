@@ -7,7 +7,7 @@ variable "node_config" {
     use_ssh_agent      = bool
     subnet_id          = string
     network_id         = string
-    secgroup_id        = string
+    secgroup_ids       = list(string)
     config_drive       = bool
     floating_ip_pool   = string
     user_data          = string

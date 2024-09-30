@@ -61,13 +61,16 @@ variable "no_proxy" {
 ######################
 
 variable "secgroup_rules" {
-  type = list(any)
-  default = [{ "source" = "0.0.0.0/0", "protocol" = "tcp", "port" = 22 },
-    { "source" = "0.0.0.0/0", "protocol" = "tcp", "port" = 6443 },
-    { "source" = "0.0.0.0/0", "protocol" = "tcp", "port" = 80 },
-    { "source" = "0.0.0.0/0", "protocol" = "tcp", "port" = 443 }
-  ]
+  type        = list(any)
+  default     = []
   description = "Security group rules"
+}
+
+variable "existing_secgroups" {
+  type        = list(any)
+  default     = []
+  description = "List of names of existing security groups that should be applied to the server"
+
 }
 
 #####################

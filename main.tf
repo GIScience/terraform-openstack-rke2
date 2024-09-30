@@ -7,7 +7,7 @@ locals {
     use_ssh_agent      = var.use_ssh_agent
     network_id         = local.nodes_net_id
     subnet_id          = local.nodes_subnet_id
-    secgroup_id        = module.secgroup.secgroup_id
+    secgroup_ids       = local.secgroup_ids
     server_affinity    = var.server_group_affinity
     config_drive       = var.nodes_config_drive
     floating_ip_pool   = var.public_net_name
@@ -29,8 +29,14 @@ locals {
   scp              = "scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${local.ssh_key_arg}"
   remote_rke2_yaml = "${var.system_user}@${module.server.floating_ip[0]}:/etc/rancher/rke2/rke2-remote.yaml"
 
-  nodes_net_id    = var.use_existing_network ? var.existing_network_id : module.network.nodes_net_id
-  nodes_subnet_id = var.use_existing_network ? var.existing_subnet_id : module.network.nodes_subnet_id
+  nodes_net_id    = var.use_existing_network ? var.existing_network_id : module.network[0].nodes_net_id
+  nodes_subnet_id = var.use_existing_network ? var.existing_subnet_id : module.network[0].nodes_subnet_id
+  secgroup_ids    = length(var.secgroup_rules) > 0 ? concat([for secgroup in data.openstack_networking_secgroup_v2.existing_secgroups : secgroup.id], [module.secgroup[0].secgroup_id]) : [for secgroup in data.openstack_networking_secgroup_v2.existing_secgroups : secgroup.id]
+}
+
+data "openstack_networking_secgroup_v2" "existing_secgroups" {
+  for_each = toset(var.existing_secgroups)
+  name     = each.value
 }
 
 module "keypair" {
@@ -54,6 +60,7 @@ module "network" {
 
 module "secgroup" {
   source      = "./modules/secgroup"
+  count       = length(var.secgroup_rules) > 0 ? 1 : 0
   name_prefix = var.cluster_name
   rules       = var.secgroup_rules
 }
@@ -74,7 +81,7 @@ module "server" {
   use_ssh_agent            = var.use_ssh_agent
   network_id               = local.nodes_net_id
   subnet_id                = local.nodes_subnet_id
-  secgroup_id              = module.secgroup.secgroup_id
+  secgroup_ids             = local.secgroup_ids
   server_affinity          = var.server_group_affinity
   assign_floating_ip       = "true"
   config_drive             = var.nodes_config_drive

@@ -84,7 +84,7 @@ resource "openstack_compute_instance_v2" "instance" {
 resource "openstack_networking_port_v2" "port" {
   count              = var.nodes_count
   network_id         = var.network_id
-  security_group_ids = [var.secgroup_id]
+  security_group_ids = var.secgroup_ids
   admin_state_up     = true
   fixed_ip {
     subnet_id = var.subnet_id

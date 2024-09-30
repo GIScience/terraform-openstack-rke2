@@ -70,8 +70,8 @@ variable "server_affinity" {
   type = string
 }
 
-variable "secgroup_id" {
-  type = string
+variable "secgroup_ids" {
+  type = list(string)
 }
 
 variable "assign_floating_ip" {

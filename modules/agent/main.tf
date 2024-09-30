@@ -14,7 +14,7 @@ module "agent" {
   use_ssh_agent          = var.node_config.use_ssh_agent
   network_id             = var.node_config.network_id
   subnet_id              = var.node_config.subnet_id
-  secgroup_id            = var.node_config.secgroup_id
+  secgroup_ids           = var.node_config.secgroup_ids
   server_affinity        = var.server_group_affinity
   config_drive           = var.node_config.config_drive
   floating_ip_pool       = var.node_config.floating_ip_pool
